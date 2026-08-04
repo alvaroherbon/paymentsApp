@@ -13,20 +13,26 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
 
     @Override
     public Order save(Order order) {
-        OrderJpaEntity entity = OrderJpaEntity.builder()
+        OrderJpaEntity entity = toEntity(order);
+        OrderJpaEntity saved = jpaRepository.save(entity);
+        return toDomainModel(saved);
+    }
+
+    private OrderJpaEntity toEntity(Order order) {
+        return OrderJpaEntity.builder()
                 .id(order.getId())
                 .customerId(order.getCustomerId())
                 .amount(order.getAmount())
                 .status(order.getStatus())
                 .build();
+    }
 
-        OrderJpaEntity savedEntity = jpaRepository.save(entity);
-
+    private Order toDomainModel(OrderJpaEntity entity) {
         return Order.builder()
-                .id(savedEntity.getId())
-                .customerId(savedEntity.getCustomerId())
-                .amount(savedEntity.getAmount())
-                .status(savedEntity.getStatus())
+                .id(entity.getId())
+                .customerId(entity.getCustomerId())
+                .amount(entity.getAmount())
+                .status(entity.getStatus())
                 .build();
     }
 }
