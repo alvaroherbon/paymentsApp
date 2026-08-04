@@ -6,10 +6,13 @@ import com.example.ordersApp.application.port.out.OrderRepositoryPort;
 import com.example.ordersApp.domain.enums.OrderStatus;
 import com.example.ordersApp.domain.model.Order;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.logging.structured.ElasticCommonSchemaProperties;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Service
 @RequiredArgsConstructor
 public class OrderService implements CreateOrderUseCase {
 
