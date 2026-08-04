@@ -1,6 +1,7 @@
 package com.example.payment.infrastructure.adapter.in.kafka;
 
 import com.example.payment.application.service.PaymentService;
+import com.example.payment.infrastructure.adapter.in.kafka.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,7 +16,7 @@ public class OrderKafkaConsumer {
 
     @KafkaListener(topics = "order-events", groupId = "payment-group")
     public void listenOrderCreated(OrderCreatedEvent event) {
-        log.info("📥 [Payment-App] Pedido recibido de Kafka con ID: {}", event.orderId());
+        log.info("📥 [Payment-App] ¡Pedido recibido y mapeado con éxito!: ID={}", event.orderId());
 
         // Procesar y guardar en base de datos
         paymentService.processPayment(event.orderId(), event.amount());
