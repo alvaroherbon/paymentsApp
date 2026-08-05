@@ -18,9 +18,12 @@ spring:
 
   # Configuración de Kafka
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka-2470b0bd-pyamentsapp.e.aivencloud.com:22372
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.add.type.headers: false
+        security.protocol: SASL_SSL
+        sasl.mechanism: SCRAM-SHA-256
+        sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="avnadmin" password="AVNS_BPOvkQfuJWIyIsPyxpU";
+        ssl.endpoint.identification.algorithm: ""

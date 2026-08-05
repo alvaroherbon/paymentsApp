@@ -21,8 +21,7 @@ public class OrderEventPublisherAdapter implements OrderEventPublisherPort {
         OrderCreatedEvent event = new OrderCreatedEvent(
                 order.getId(),
                 order.getCustomerId(),
-                order.getAmount(),
-                order.getStatus()
+                order.getAmount()
         );
 
         log.info("Publicando evento OrderCreatedEvent en Kafka para el pedido: {}", order.getId());

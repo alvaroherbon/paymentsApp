@@ -9,6 +9,5 @@ import java.util.UUID;
 public record OrderCreatedEvent(
     UUID orderId,
     String customerId,
-    BigDecimal amount,
-    OrderStatus status) implements Serializable{}
+    BigDecimal amount) implements Serializable{}
 

@@ -1,28 +1,36 @@
 server:
   port: 8082
+
 logging:
   level:
     org.springframework.kafka: DEBUG
     org.apache.kafka: INFO
+
 spring:
   application:
     name: payment-app
+
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka-2470b0bd-pyamentsapp.e.aivencloud.com:22372
     consumer:
-      group-id: payments-group
+      group-id: payment-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.example.payment,com.example.ordersApp"
+        security.protocol: SASL_SSL
+        sasl.mechanism: SCRAM-SHA-256
+        sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="avnadmin" password="AVNS_BPOvkQfuJWIyIsPyxpU";
+        ssl.endpoint.identification.algorithm: ""
