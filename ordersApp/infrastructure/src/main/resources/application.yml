@@ -19,11 +19,16 @@ spring:
   # Configuración de Kafka
   kafka:
     bootstrap-servers: kafka-2470b0bd-pyamentsapp.e.aivencloud.com:22372
+    properties:
+      security.protocol: SSL
+    ssl:
+      trust-store-type: PEM
+      trust-store-certificates: classpath:certs/ca.pem
+      key-store-type: PEM
+      key-store-certificate-chain: classpath:certs/service.cert
+      key-store-key: classpath:certs/service.key
+
+      # Configuración específica del Productor (ordersApp)
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        security.protocol: SASL_SSL
-        sasl.mechanism: SCRAM-SHA-256
-        sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="avnadmin" password="AVNS_BPOvkQfuJWIyIsPyxpU";
-        ssl.endpoint.identification.algorithm: ""
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

@@ -24,13 +24,18 @@ spring:
 
   kafka:
     bootstrap-servers: kafka-2470b0bd-pyamentsapp.e.aivencloud.com:22372
+    properties:
+      security.protocol: SSL
+    ssl:
+      trust-store-type: PEM
+      trust-store-certificates: classpath:certs/ca.pem
+      key-store-type: PEM
+      key-store-certificate-chain: classpath:certs/service.cert
+      key-store-key: classpath:certs/service.key
     consumer:
-      group-id: payment-group
+      group-id: payments-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        security.protocol: SASL_SSL
-        sasl.mechanism: SCRAM-SHA-256
-        sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="avnadmin" password="AVNS_BPOvkQfuJWIyIsPyxpU";
-        ssl.endpoint.identification.algorithm: ""
+        spring.json.trusted.packages: "com.example.*"
