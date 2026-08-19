@@ -50,7 +50,7 @@ services:
     networks:
       - app-net
 
-  # Servicio 1: Pedidos (Order App)
+  # Servicio 1: Pedidos (Order App - Django)
   order-service:
     build: ./order-service
     container_name: order_app
@@ -65,7 +65,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespassword
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      - ALLOWED_HOSTS=order_app,payment_app,localhost,127.0.0.1
+      - ALLOWED_HOSTS=order_app,payment_app,payment_spring,localhost,127.0.0.1
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')\" || exit 1"]
       interval: 10s
@@ -80,7 +80,7 @@ services:
     networks:
       - app-net
 
-  # Servicio 2: Pagos (Payment App)
+  # Servicio 2: API de Pagos (Payment App - Django, solo API REST)
   payment-service:
     build: ./payment-service
     container_name: payment_app
@@ -95,7 +95,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgrespassword
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      - ALLOWED_HOSTS=order_app,payment_app,localhost,127.0.0.1
+      - ALLOWED_HOSTS=order_app,payment_app,payment_spring,localhost,127.0.0.1
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/health/')\" || exit 1"]
       interval: 10s
@@ -107,10 +107,35 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
-      order-service:
-        condition: service_healthy
     networks:
       - app-net
+
+  # Servicio 3: Consumer de Pagos (Spring Boot - Kafka consumer)
+  payment-service-spring:
+    build: ./payment-service-spring
+    container_name: payment_spring
+    ports:
+      - "8002:8002"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=ecommerce_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespassword
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8002/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - app-net
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin_ui
@@ -121,6 +146,7 @@ services:
       - "5050:80"
     networks:
       - app-net
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka_ui
