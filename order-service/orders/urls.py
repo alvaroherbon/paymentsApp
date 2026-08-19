@@ -1,6 +1,8 @@
+from django.http import JsonResponse
 from django.urls import path
-from .views import create_order
+
+from .views import OrderListCreateView
 
 urlpatterns = [
-    path('create/', create_order, name='create_order'),
+    path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
 ]
